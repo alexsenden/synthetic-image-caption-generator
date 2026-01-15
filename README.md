@@ -15,6 +15,14 @@ This tool is designed to be used for deep generative dataset augmentation.
 
 ## Installation
 
+To install from PyPI:
+
+```bash
+pip install synthetic-image-caption-generator
+```
+
+To install locally:
+
 ```bash
 pip install -e .
 ```
