@@ -57,7 +57,7 @@ class CaptionGenerator:
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name, local_files_only=offline
-        ).to(self.device)
+        )
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
