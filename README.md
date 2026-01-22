@@ -6,12 +6,12 @@ This tool is designed to be used for deep generative dataset augmentation.
 
 ## Features
 
--   Uses Qwen from HuggingFace🤗 Transformers
--   Supports few-shot learning with configurable number of examples
--   Reads prompts from .txt files in a dataset directory
--   Flexible CLI with multiple configuration options
--   Can generate multiple captions in one run
--   Output to file or stdout
+- Uses Qwen from HuggingFace🤗 Transformers
+- Supports few-shot learning with configurable number of examples
+- Reads prompts from .txt files in a dataset directory
+- Flexible CLI with multiple configuration options
+- Can generate multiple captions in one run
+- Output to file or stdout
 
 ## Installation
 
@@ -34,6 +34,21 @@ pip install transformers>=4.30.0 torch>=2.0.0 accelerate>=0.20.0
 ```
 
 ## Usage
+
+### Downloading Models
+
+Before generating captions, you can pre-download a model to the Hugging Face cache for offline use:
+
+```bash
+# Download the default model (qwen2.5-32b)
+download-caption-model
+
+# Download a specific model
+download-caption-model --model qwen2.5-7b
+
+# Download a larger model
+download-caption-model --model qwen2.5-72b
+```
 
 ### Basic Usage
 
@@ -109,14 +124,20 @@ generate-captions /path/to/dataset \
 
 ## Command-Line Arguments
 
--   `dataset_dir` (required): Path to directory containing .txt files with caption prompts
--   `--model`: Qwen model to use (default: qwen2.5-32b). Options: qwen2.5-0.5b, qwen2.5-1.5b, qwen2.5-3b, qwen2.5-7b, qwen2.5-14b, qwen2.5-32b, qwen2.5-72b, qwen3-14b, qwen3-32b
--   `--num-examples`: Number of example prompts to provide to the model (default: 5)
--   `--num-generate`: Number of captions to generate (default: 1)
--   `--output`: Output file to save generated captions (optional, prints to stdout if not specified)
--   `--temperature`: Temperature for text generation (default: 0.7, higher = more creative)
--   `--max-length`: Maximum length of generated caption (default: 256)
--   `--object-info`: Information about objects/content in the image (e.g., "the image contains 3 elephants")
+### `generate-captions`
+
+- `dataset_dir` (required): Path to directory containing .txt files with caption prompts
+- `--model`: Qwen model to use (default: qwen2.5-32b). Options: qwen2.5-0.5b, qwen2.5-1.5b, qwen2.5-3b, qwen2.5-7b, qwen2.5-14b, qwen2.5-32b, qwen2.5-72b, qwen3-14b, qwen3-32b
+- `--num-examples`: Number of example prompts to provide to the model (default: 5)
+- `--num-generate`: Number of captions to generate (default: 1)
+- `--output`: Output file to save generated captions (optional, prints to stdout if not specified)
+- `--temperature`: Temperature for text generation (default: 0.7, higher = more creative)
+- `--max-length`: Maximum length of generated caption (default: 256)
+- `--object-info`: Information about objects/content in the image (e.g., "the image contains 3 elephants")
+
+### `download-caption-model`
+
+- `--model`: Qwen model to download (default: qwen2.5-32b). Options: qwen2.5-0.5b, qwen2.5-1.5b, qwen2.5-3b, qwen2.5-7b, qwen2.5-14b, qwen2.5-32b, qwen2.5-72b, qwen3-14b, qwen3-32b
 
 ## Dataset Format
 
@@ -141,13 +162,13 @@ A close-up portrait of a person smiling at the camera
 
 ## Requirements
 
--   Python >= 3.8
--   CUDA-capable GPU recommended
--   Sufficient GPU memory depending on chosen model:
-    -   Small models (0.5B-3B): 4-8GB VRAM
-    -   Medium models (7B-14B): 12-24GB VRAM
-    -   Large models (32B): 24-40GB VRAM
-    -   Extra large models (72B): 40GB+ VRAM or quantization required
+- Python >= 3.8
+- CUDA-capable GPU recommended
+- Sufficient GPU memory depending on chosen model:
+    - Small models (0.5B-3B): 4-8GB VRAM
+    - Medium models (7B-14B): 12-24GB VRAM
+    - Large models (32B): 24-40GB VRAM
+    - Extra large models (72B): 40GB+ VRAM or quantization required
 
 ## How It Works
 
