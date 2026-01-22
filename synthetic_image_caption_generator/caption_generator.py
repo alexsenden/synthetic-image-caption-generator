@@ -15,6 +15,7 @@ class CaptionGenerator:
         temperature: float = 0.7,
         max_length: int = 256,
         device: torch.device = None,
+        offline: bool = False,
     ):
         """
         Initialize the caption generator.
@@ -24,6 +25,7 @@ class CaptionGenerator:
             temperature: Temperature for text generation (higher = more random)
             max_length: Maximum length of generated text
             device: Torch device to run the model on (e.g., "cpu", "cuda")
+            offline: Whether to load the model in offline mode (default: False)
         """
         self.temperature = temperature
         self.max_length = max_length
@@ -53,11 +55,14 @@ class CaptionGenerator:
 
         model_name = model_map[model.lower()]
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, local_files_only=offline
+        ).to(self.device)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
             trust_remote_code=True,
+            local_files_only=offline,
         ).to(self.device)
 
         self.model.eval()
