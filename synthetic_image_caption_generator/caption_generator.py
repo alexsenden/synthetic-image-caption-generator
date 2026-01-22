@@ -14,6 +14,7 @@ class CaptionGenerator:
         model: str = "qwen2.5-32b",
         temperature: float = 0.7,
         max_length: int = 256,
+        device: torch.device = None,
     ):
         """
         Initialize the caption generator.
@@ -22,9 +23,15 @@ class CaptionGenerator:
             model: Qwen model to use (e.g., "qwen2.5-32b", "qwen3-14b")
             temperature: Temperature for text generation (higher = more random)
             max_length: Maximum length of generated text
+            device: Torch device to run the model on (e.g., "cpu", "cuda")
         """
         self.temperature = temperature
         self.max_length = max_length
+        self.device = (
+            device
+            if device is not None
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        )
 
         # Map model names to Hugging Face model IDs
         model_map = {
@@ -50,9 +57,8 @@ class CaptionGenerator:
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
-            device_map="auto",
             trust_remote_code=True,
-        )
+        ).to(self.device)
 
         self.model.eval()
 

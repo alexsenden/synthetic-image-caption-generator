@@ -8,6 +8,73 @@ from .dataset_loader import load_caption_dataset
 from .caption_generator import CaptionGenerator
 
 
+def download_model_cli():
+    """Download a Qwen model to the Hugging Face cache."""
+    parser = argparse.ArgumentParser(
+        description="Download a Qwen model to the Hugging Face cache for offline use"
+    )
+
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="qwen2.5-32b",
+        choices=[
+            "qwen2.5-0.5b",
+            "qwen2.5-1.5b",
+            "qwen2.5-3b",
+            "qwen2.5-7b",
+            "qwen2.5-14b",
+            "qwen2.5-32b",
+            "qwen2.5-72b",
+            "qwen3-14b",
+            "qwen3-32b",
+        ],
+        help="Model to download (default: qwen2.5-32b)",
+    )
+
+    args = parser.parse_args()
+
+    # Map model names to Hugging Face model IDs
+    model_map = {
+        "qwen2.5-0.5b": "Qwen/Qwen2.5-0.5B-Instruct",
+        "qwen2.5-1.5b": "Qwen/Qwen2.5-1.5B-Instruct",
+        "qwen2.5-3b": "Qwen/Qwen2.5-3B-Instruct",
+        "qwen2.5-7b": "Qwen/Qwen2.5-7B-Instruct",
+        "qwen2.5-14b": "Qwen/Qwen2.5-14B-Instruct",
+        "qwen2.5-32b": "Qwen/Qwen2.5-32B-Instruct",
+        "qwen2.5-72b": "Qwen/Qwen2.5-72B-Instruct",
+        "qwen3-14b": "Qwen/Qwen3-14B-Instruct",
+        "qwen3-32b": "Qwen/Qwen3-32B-Instruct",
+    }
+
+    model_name = model_map[args.model]
+
+    print(f"Downloading {model_name} to Hugging Face cache...", file=sys.stderr)
+    print("This may take a while depending on the model size.", file=sys.stderr)
+
+    try:
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        # Download tokenizer
+        print(f"\nDownloading tokenizer...", file=sys.stderr)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        print(f"✓ Tokenizer downloaded successfully", file=sys.stderr)
+
+        # Download model
+        print(f"\nDownloading model weights...", file=sys.stderr)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            trust_remote_code=True,
+        )
+        print(f"✓ Model downloaded successfully", file=sys.stderr)
+
+        print(f"\n✓ {model_name} is now cached and ready for offline use!", file=sys.stderr)
+
+    except Exception as e:
+        print(f"\n✗ Error downloading model: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     """Main entry point for the CLI."""
     parser = argparse.ArgumentParser(

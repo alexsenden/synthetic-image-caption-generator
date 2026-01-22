@@ -38,6 +38,7 @@ dynamic = ["version"]
 
 [project.scripts]
 generate-captions = "synthetic_image_caption_generator.cli:main"
+download-caption-model = "synthetic_image_caption_generator.cli:download_model_cli"
 
 [tool.hatch.version]
 source = "vcs"
